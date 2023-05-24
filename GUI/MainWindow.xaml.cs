@@ -1,39 +1,44 @@
-﻿using System.Windows;
-using System.Windows.Controls;
+﻿using System;
+using System.Windows;
+using System.Windows.Threading;
 
 namespace GUI
 {
+    using static Interop.CoreLib;
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow
     {
+        private readonly DispatcherTimer dispatcherTimer = new DispatcherTimer();
+
         public MainWindow()
         {
             InitializeComponent();
-
+            
             Loaded += OnLoad;
+            Closed += OnClose;
+            
+            dispatcherTimer.Tick += (_, _) => UpdateEngine();
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 1, 0);
         }
 
         public void OnLoad(object sender, RoutedEventArgs eventArgs)
         {
-            var horizontalAmount = 50;
-            var verticalAmount = 50;
+            addCellToCanvasDelegate = AddCellToCanvas;
+            RegisterAddCellToCanvasCallback(addCellToCanvasDelegate);
+            updateCellOnCanvasDelegate = UpdateCellOnCanvas;
+            RegisterUpdateCellOnCanvasCallback(updateCellOnCanvasDelegate);
             
-            var cellWidth = mainCanvas.ActualWidth/horizontalAmount;
-            var cellHeight = mainCanvas.ActualHeight/verticalAmount;
-            
-            var cells = Cell.CreateCells(horizontalAmount, verticalAmount, mainCanvas.ActualWidth, mainCanvas.ActualHeight);
-
-            for (int i = 0; i < cells.Length; i++)
-            {
-                var cell = cells[i];
-                
-                Canvas.SetLeft(cell.Rect, cell.X * cellWidth);
-                Canvas.SetTop(cell.Rect, cell.Y * cellHeight);
-                    
-                mainCanvas.Children.Add(cell.Rect);
-            }
+            InitializeEngine(mainCanvas.ActualWidth, mainCanvas.ActualHeight);
+            dispatcherTimer.Start();
+        }
+        
+        public void OnClose(object sender, EventArgs eventArgs)
+        {
+            dispatcherTimer.Stop();
+            CleanupEngine();
         }
     }
 }

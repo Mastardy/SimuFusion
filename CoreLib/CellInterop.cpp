@@ -1,9 +1,7 @@
 ﻿#include "CellInterop.hpp"
 
-#include <bit>
-
 CellInterop CreateCell(int x, int y, double width, double height)
-{        
+{
     return CellInterop
     {
         x,
@@ -30,4 +28,19 @@ CellInterop* CreateCells(int horizontalAmount, int verticalAmount, double canvas
     }
     
     return cells;
+}
+
+void DeleteCells(const CellInterop* cells)
+{
+    delete[] cells;
+}
+
+void RegisterAddCellToCanvasCallback(AddCellToCanvasFunc callback)
+{
+    AddCellToCanvasCallback = callback;
+}
+
+void RegisterUpdateCellOnCanvasCallback(UpdateCellOnCanvasFunc callback)
+{
+    UpdateCellOnCanvasCallback = callback;
 }
