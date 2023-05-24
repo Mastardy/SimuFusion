@@ -1,8 +1,5 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Shapes;
 
 namespace GUI
 {
@@ -25,41 +22,18 @@ namespace GUI
             
             var cellWidth = mainCanvas.ActualWidth/horizontalAmount;
             var cellHeight = mainCanvas.ActualHeight/verticalAmount;
-
-            Console.WriteLine(mainCanvas.ActualWidth);
-            Console.WriteLine(mainCanvas.ActualHeight);
             
-            for (int x = 0; x < mainCanvas.ActualWidth / cellWidth; x++)
-            {
-                for(int y = 0; y < mainCanvas.ActualHeight / cellHeight; y++)
-                {
-                    var cell = new Cell
-                    {
-                        X = x,
-                        Y = y,
-                        Color = new SolidColorBrush(Colors.White)
-                    };
+            var cells = Cell.CreateCells(horizontalAmount, verticalAmount, mainCanvas.ActualWidth, mainCanvas.ActualHeight);
 
-                    var rect = new Rectangle
-                    {
-                        Width = cellWidth,
-                        Height = cellHeight,
-                        Fill = cell.Color
-                    };
+            for (int i = 0; i < cells.Length; i++)
+            {
+                var cell = cells[i];
+                
+                Canvas.SetLeft(cell.Rect, cell.X * cellWidth);
+                Canvas.SetTop(cell.Rect, cell.Y * cellHeight);
                     
-                    Canvas.SetLeft(rect, cell.X * cellWidth);
-                    Canvas.SetTop(rect, cell.Y * cellHeight);
-                    
-                    mainCanvas.Children.Add(rect);
-                }
+                mainCanvas.Children.Add(cell.Rect);
             }
         }
-    }
-
-    public class Cell
-    {
-        public int X { get; set; }
-        public int Y { get; set; }
-        public SolidColorBrush Color { get; set; }
     }
 }
