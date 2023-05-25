@@ -38,7 +38,7 @@ public partial class MainWindow
     public void UpdateCellOnCanvas(int x, int y, IntPtr color)
     {
         Cell cell = Cells[x, y];
-        
+
         cell.Rect.Dispatcher.Invoke(() =>
         {
             cell.Rect.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(Marshal.PtrToStringUni(color))!);
